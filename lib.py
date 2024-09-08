@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, 
                              QTableWidget, QTableWidgetItem, QMessageBox, QHBoxLayout, QTabWidget, 
-                             QDateEdit, QInputDialog, QAbstractItemView)
+                             QDateEdit, QInputDialog, QAbstractItemView, QHeaderView)
 from PyQt5.QtCore import QDate
 import pandas as pd
 
@@ -88,6 +88,9 @@ class LibraryManagementSystem(QWidget):
         # Book List Table
         self.book_table = QTableWidget()
         self.book_table.setColumnCount(3)
+        self.book_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.book_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.book_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         self.book_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.book_table.setHorizontalHeaderLabels(["Title", "Author", "Year"])
 
@@ -124,6 +127,10 @@ class LibraryManagementSystem(QWidget):
 
         self.borrowed_table = QTableWidget()
         self.borrowed_table.setColumnCount(4)
+        self.borrowed_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.borrowed_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.borrowed_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.borrowed_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.borrowed_table.setHorizontalHeaderLabels(["Borrower", "Title", "Borrow Date", "Return Date"])
 
         layout.addWidget(self.borrowed_table)
