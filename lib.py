@@ -1,8 +1,11 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QTableWidget, QTableWidgetItem, QMessageBox, QHBoxLayout, QTabWidget, QDateEdit
+from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, 
+                             QTableWidget, QTableWidgetItem, QMessageBox, QHBoxLayout, QTabWidget, 
+                             QDateEdit, QInputDialog)
 from PyQt5.QtCore import QDate
 import pandas as pd
 
+BOOK_FILE = 'books.txt'
 
 class WelcomeScreen(QWidget):
     def __init__(self):
@@ -56,6 +59,9 @@ class LibraryManagementSystem(QWidget):
         # Data storage
         self.book_data = pd.DataFrame(columns=['Title', 'Author', 'Year'])
         self.borrowed_books = pd.DataFrame(columns=['Borrower', 'Title', 'Borrow Date', 'Return Date'])
+
+        # Load books from file
+        self.load_books_from_file()
 
     def init_books_tab(self):
         layout = QVBoxLayout()
@@ -122,6 +128,22 @@ class LibraryManagementSystem(QWidget):
         layout.addWidget(self.borrowed_table)
         self.borrowed_tab.setLayout(layout)
 
+    def load_books_from_file(self):
+        try:
+            with open(BOOK_FILE, 'r') as f:
+                lines = f.readlines()
+
+            # Populate DataFrame with file data
+            for line in lines:
+                title, author, year = line.strip().split(',')
+                new_book = pd.DataFrame([[title, author, year]], columns=['Title', 'Author', 'Year'])
+                self.book_data = pd.concat([self.book_data, new_book], ignore_index=True)
+
+            self.update_book_table()
+
+        except FileNotFoundError:
+            QMessageBox.information(self, "File Error", "No book file found. Starting fresh.")
+
     def add_book(self):
         title = self.title_input.text()
         author = self.author_input.text()
@@ -131,6 +153,10 @@ class LibraryManagementSystem(QWidget):
             # Add book to the data storage
             new_book = pd.DataFrame([[title, author, year]], columns=['Title', 'Author', 'Year'])
             self.book_data = pd.concat([self.book_data, new_book], ignore_index=True)
+
+            # Save to the .txt file
+            with open(BOOK_FILE, 'a') as f:
+                f.write(f'{title},{author},{year}\n')
 
             # Update UI Table
             self.update_book_table()
@@ -154,11 +180,21 @@ class LibraryManagementSystem(QWidget):
         selected_row = self.book_table.currentRow()
         if selected_row >= 0:
             # Remove the selected row from the data and table
+            title_to_remove = self.book_data.iloc[selected_row]['Title']
             self.book_data = self.book_data.drop(selected_row).reset_index(drop=True)
             self.update_book_table()
+
+            # Remove from the .txt file
+            self.save_books_to_file()
+
             QMessageBox.information(self, "Success", "Book removed successfully!")
         else:
             QMessageBox.warning(self, "Selection Error", "Please select a book to remove")
+
+    def save_books_to_file(self):
+        with open(BOOK_FILE, 'w') as f:
+            for index, row in self.book_data.iterrows():
+                f.write(f"{row['Title']},{row['Author']},{row['Year']}\n")
 
     def search_book(self):
         search_query = self.search_input.text().lower()
@@ -193,11 +229,7 @@ class LibraryManagementSystem(QWidget):
                 # Update borrowed books table
                 self.update_borrowed_table()
 
-                QMessageBox.information(self, "Success", f"{title} borrowed by {borrower}!")
-            else:
-                QMessageBox.warning(self, "Input Error", "Please enter a borrower's name")
-        else:
-            QMessageBox.warning(self, "Selection Error", "Please select a book to borrow")
+                QMessageBox.information(self, "Success", f"{title} has been borrowed by {borrower}!")
 
     def update_borrowed_table(self):
         self.borrowed_table.setRowCount(len(self.borrowed_books))
@@ -208,10 +240,8 @@ class LibraryManagementSystem(QWidget):
             self.borrowed_table.setItem(row, 3, QTableWidgetItem(self.borrowed_books.iloc[row]['Return Date']))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = QApplication(sys.argv)
-    
-    welcome_screen = WelcomeScreen()
-    welcome_screen.show()
-    
+    welcome = WelcomeScreen()
+    welcome.show()
     sys.exit(app.exec_())
