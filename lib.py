@@ -3,8 +3,11 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEd
                              QTableWidget, QTableWidgetItem, QMessageBox, QHBoxLayout, QTabWidget, 
                              QDateEdit, QInputDialog, QAbstractItemView, QHeaderView, QDialog, QFormLayout, QTextBrowser)
 from PyQt5.QtCore import QDate
-from textblob import TextBlob 
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import pandas as pd
+
+nltk.download('vader_lexicon')
 
 BOOK_FILE = 'books.txt'
 BORROWER_FILE = 'borrowers.txt'
@@ -27,14 +30,16 @@ class ReviewDialog(QDialog):
         
     def load_reviews_with_sentiment(self, book_title):
         reviews = []
+        sia = SentimentIntensityAnalyzer()  # VADER sentiment analyzer
         try:
             with open(REVIEW_FILE, 'r') as file:
                 for line in file:
                     title, review = map(str.strip, line.strip().split(':', 1))
                     if title.lower() == book_title.lower():
-                        # Analyze sentiment of the review
-                        analysis = TextBlob(review)
-                        sentiment = self.get_sentiment_label(analysis.sentiment.polarity)
+                        # Analyze sentiment of the review using VADER
+                        sentiment_scores = sia.polarity_scores(review)
+                        sentiment = self.get_sentiment_label(sentiment_scores['compound'])
+                        
                         # Append review with sentiment
                         sentiment_color = self.get_sentiment_color(sentiment)
                         reviews.append(f"Review: {review}<br>Sentiment: <span style='font-weight: bold; color: {sentiment_color}'>{sentiment}</span><br><br>")
@@ -46,14 +51,14 @@ class ReviewDialog(QDialog):
         else:
             self.review_text.setHtml("No reviews available.")
 
-    def get_sentiment_label(self, polarity):
-        """Helper method to classify sentiment based on polarity score."""
-        if polarity > 0:
+    def get_sentiment_label(self, compound_score):
+        """Helper method to classify sentiment based on VADER's compound score."""
+        if compound_score >= 0.05:
             return "Positive"
-        elif polarity == 0:
-            return "Neutral"
-        else:
+        elif compound_score <= -0.05:
             return "Negative"
+        else:
+            return "Neutral"
 
     def get_sentiment_color(self, sentiment):
         """Helper method to get sentiment color."""
@@ -63,7 +68,7 @@ class ReviewDialog(QDialog):
             return "gray"
         else:
             return "red"
-        
+
 class AddBookDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
