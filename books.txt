@@ -57,7 +57,6 @@ The Wind-Up Bird Chronicle, Haruki Murakami, 1994
 Norwegian Wood, Haruki Murakami, 1987
 Kafka on the Shore, Haruki Murakami, 2002
 The Catcher in the Rye, J.D. Salinger, 1951
-The Great Gatsby, F. Scott Fitzgerald, 1925
 The Grapes of Wrath, John Steinbeck, 1939
 East of Eden, John Steinbeck, 1952
 Of Mice and Men, John Steinbeck, 1937
@@ -69,7 +68,6 @@ Gone with the Wind, Margaret Mitchell, 1936
 The Call of the Wild, Jack London, 1903
 White Fang, Jack London, 1906
 The Catcher in the Rye, J.D. Salinger, 1951
-The Great Gatsby, F. Scott Fitzgerald, 1925
 The Grapes of Wrath, John Steinbeck, 1939
 East of Eden, John Steinbeck, 1952
 Of Mice and Men, John Steinbeck, 1937
@@ -81,11 +79,9 @@ Gone with the Wind, Margaret Mitchell, 1936
 The Call of the Wild, Jack London, 1903
 White Fang, Jack London, 1906
 The Catcher in the Rye, J.D. Salinger, 1951
-The Great Gatsby, F. Scott Fitzgerald, 1925
 The Grapes of Wrath, John Steinbeck, 1939
 East of Eden, John Steinbeck, 1952
 Of Mice and Men, John Steinbeck, 1937
-The Scarlet Letter, Nathaniel Hawthorne, 1850
 Moby-Dick, Herman Melville, 1851
 The Adventures of Huckleberry Finn, Mark Twain, 1884
 The Adventures of Tom Sawyer, Mark Twain, 1876
@@ -93,7 +89,6 @@ Gone with the Wind, Margaret Mitchell, 1936
 The Call of the Wild, Jack London, 1903
 White Fang, Jack London, 1906
 The Catcher in the Rye, J.D. Salinger, 1951
-The Great Gatsby, F. Scott Fitzgerald, 1925
 The Grapes of Wrath, John Steinbeck, 1939
 East of Eden, John Steinbeck, 1952
 Of Mice and Men, John Steinbeck, 1937
