@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, 
                              QTableWidget, QTableWidgetItem, QMessageBox, QHBoxLayout, QTabWidget, 
-                             QDateEdit, QInputDialog)
+                             QDateEdit, QInputDialog, QAbstractItemView)
 from PyQt5.QtCore import QDate
 import pandas as pd
 
@@ -88,6 +88,7 @@ class LibraryManagementSystem(QWidget):
         # Book List Table
         self.book_table = QTableWidget()
         self.book_table.setColumnCount(3)
+        self.book_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.book_table.setHorizontalHeaderLabels(["Title", "Author", "Year"])
 
         # Borrow Book Button
