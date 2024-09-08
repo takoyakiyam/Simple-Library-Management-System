@@ -1,0 +1,100 @@
+1984, George Orwell, 1949
+To Kill a Mockingbird, Harper Lee, 1960
+Pride and Prejudice, Jane Austen, 1813
+The Great Gatsby, F. Scott Fitzgerald, 1925
+Moby-Dick, Herman Melville, 1851
+War and Peace, Leo Tolstoy, 1869
+The Catcher in the Rye, J.D. Salinger, 1951
+The Lord of the Rings, J.R.R. Tolkien, 1954
+Jane Eyre, Charlotte Brontë, 1847
+Crime and Punishment, Fyodor Dostoevsky, 1866
+The Brothers Karamazov, Fyodor Dostoevsky, 1880
+Wuthering Heights, Emily Brontë, 1847
+Brave New World, Aldous Huxley, 1932
+The Odyssey, Homer, 8th century BC
+The Iliad, Homer, 8th century BC
+Anna Karenina, Leo Tolstoy, 1877
+Madame Bovary, Gustave Flaubert, 1857
+The Divine Comedy, Dante Alighieri, 1320
+The Canterbury Tales, Geoffrey Chaucer, 1400
+Don Quixote, Miguel de Cervantes, 1605
+One Hundred Years of Solitude, Gabriel García Márquez, 1967
+The Sound and the Fury, William Faulkner, 1929
+The Grapes of Wrath, John Steinbeck, 1939
+Ulysses, James Joyce, 1922
+The Picture of Dorian Gray, Oscar Wilde, 1890
+Frankenstein, Mary Shelley, 1818
+Dracula, Bram Stoker, 1897
+The Hobbit, J.R.R. Tolkien, 1937
+Fahrenheit 451, Ray Bradbury, 1953
+The Catch-22, Joseph Heller, 1961
+Slaughterhouse-Five, Kurt Vonnegut, 1969
+The Metamorphosis, Franz Kafka, 1915
+The Stranger, Albert Camus, 1942
+The Trial, Franz Kafka, 1925
+The Sun Also Rises, Ernest Hemingway, 1926
+A Farewell to Arms, Ernest Hemingway, 1929
+For Whom the Bell Tolls, Ernest Hemingway, 1940
+The Old Man and the Sea, Ernest Hemingway, 1952
+Lolita, Vladimir Nabokov, 1955
+Beloved, Toni Morrison, 1987
+Invisible Man, Ralph Ellison, 1952
+The Road, Cormac McCarthy, 2006
+Blood Meridian, Cormac McCarthy, 1985
+The Handmaid’s Tale, Margaret Atwood, 1985
+The Bell Jar, Sylvia Plath, 1963
+The Color Purple, Alice Walker, 1982
+The Kite Runner, Khaled Hosseini, 2003
+Life of Pi, Yann Martel, 2001
+The Book Thief, Markus Zusak, 2005
+The Alchemist, Paulo Coelho, 1988
+The Little Prince, Antoine de Saint-Exupéry, 1943
+Charlotte’s Web, E.B. White, 1952
+Harry Potter and the Sorcerer’s Stone, J.K. Rowling, 1997
+The Chronicles of Narnia, C.S. Lewis, 1950
+Alice’s Adventures in Wonderland, Lewis Carroll, 1865
+The Wind-Up Bird Chronicle, Haruki Murakami, 1994
+Norwegian Wood, Haruki Murakami, 1987
+Kafka on the Shore, Haruki Murakami, 2002
+The Catcher in the Rye, J.D. Salinger, 1951
+The Great Gatsby, F. Scott Fitzgerald, 1925
+The Grapes of Wrath, John Steinbeck, 1939
+East of Eden, John Steinbeck, 1952
+Of Mice and Men, John Steinbeck, 1937
+The Scarlet Letter, Nathaniel Hawthorne, 1850
+Moby-Dick, Herman Melville, 1851
+The Adventures of Huckleberry Finn, Mark Twain, 1884
+The Adventures of Tom Sawyer, Mark Twain, 1876
+Gone with the Wind, Margaret Mitchell, 1936
+The Call of the Wild, Jack London, 1903
+White Fang, Jack London, 1906
+The Catcher in the Rye, J.D. Salinger, 1951
+The Great Gatsby, F. Scott Fitzgerald, 1925
+The Grapes of Wrath, John Steinbeck, 1939
+East of Eden, John Steinbeck, 1952
+Of Mice and Men, John Steinbeck, 1937
+The Scarlet Letter, Nathaniel Hawthorne, 1850
+Moby-Dick, Herman Melville, 1851
+The Adventures of Huckleberry Finn, Mark Twain, 1884
+The Adventures of Tom Sawyer, Mark Twain, 1876
+Gone with the Wind, Margaret Mitchell, 1936
+The Call of the Wild, Jack London, 1903
+White Fang, Jack London, 1906
+The Catcher in the Rye, J.D. Salinger, 1951
+The Great Gatsby, F. Scott Fitzgerald, 1925
+The Grapes of Wrath, John Steinbeck, 1939
+East of Eden, John Steinbeck, 1952
+Of Mice and Men, John Steinbeck, 1937
+The Scarlet Letter, Nathaniel Hawthorne, 1850
+Moby-Dick, Herman Melville, 1851
+The Adventures of Huckleberry Finn, Mark Twain, 1884
+The Adventures of Tom Sawyer, Mark Twain, 1876
+Gone with the Wind, Margaret Mitchell, 1936
+The Call of the Wild, Jack London, 1903
+White Fang, Jack London, 1906
+The Catcher in the Rye, J.D. Salinger, 1951
+The Great Gatsby, F. Scott Fitzgerald, 1925
+The Grapes of Wrath, John Steinbeck, 1939
+East of Eden, John Steinbeck, 1952
+Of Mice and Men, John Steinbeck, 1937
+The Scarlet Letter, Nathaniel Hawthorne, 1850
