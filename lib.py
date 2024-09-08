@@ -1,8 +1,9 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, 
                              QTableWidget, QTableWidgetItem, QMessageBox, QHBoxLayout, QTabWidget, 
-                             QDateEdit, QInputDialog, QAbstractItemView, QHeaderView, QDialog, QFormLayout, QTextEdit)
+                             QDateEdit, QInputDialog, QAbstractItemView, QHeaderView, QDialog, QFormLayout, QTextBrowser)
 from PyQt5.QtCore import QDate
+from textblob import TextBlob 
 import pandas as pd
 
 BOOK_FILE = 'books.txt'
@@ -16,36 +17,53 @@ class ReviewDialog(QDialog):
         self.layout = QVBoxLayout()
         
         # Text area to show reviews
-        self.review_text = QTextEdit()
-        self.review_text.setReadOnly(True)
+        self.review_text = QTextBrowser()
         self.layout.addWidget(self.review_text)
         
-        # Load and display reviews
-        self.load_reviews(book_title)
+        # Load and display reviews with sentiment
+        self.load_reviews_with_sentiment(book_title)
         
         self.setLayout(self.layout)
         
-    def load_reviews(self, book_title):
+    def load_reviews_with_sentiment(self, book_title):
         reviews = []
         try:
             with open(REVIEW_FILE, 'r') as file:
                 for line in file:
-                    # Split by the first occurrence of ':' and strip whitespaces
                     title, review = map(str.strip, line.strip().split(':', 1))
-                    # Match titles case-insensitively
                     if title.lower() == book_title.lower():
-                        reviews.append(review)
+                        # Analyze sentiment of the review
+                        analysis = TextBlob(review)
+                        sentiment = self.get_sentiment_label(analysis.sentiment.polarity)
+                        # Append review with sentiment
+                        sentiment_color = self.get_sentiment_color(sentiment)
+                        reviews.append(f"Review: {review}<br>Sentiment: <span style='font-weight: bold; color: {sentiment_color}'>{sentiment}</span><br><br>")
         except FileNotFoundError:
             reviews = ["No reviews available."]
         
-        # Display reviews or default message
         if reviews:
-            self.review_text.setText("\n\n".join(reviews))
+            self.review_text.setHtml("<br>".join(reviews))
         else:
-            self.review_text.setText("No reviews available.")
+            self.review_text.setHtml("No reviews available.")
 
-            
+    def get_sentiment_label(self, polarity):
+        """Helper method to classify sentiment based on polarity score."""
+        if polarity > 0:
+            return "Positive"
+        elif polarity == 0:
+            return "Neutral"
+        else:
+            return "Negative"
 
+    def get_sentiment_color(self, sentiment):
+        """Helper method to get sentiment color."""
+        if sentiment == "Positive":
+            return "green"
+        elif sentiment == "Neutral":
+            return "gray"
+        else:
+            return "red"
+        
 class AddBookDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
