@@ -187,7 +187,7 @@ class LibraryManagementSystem(QWidget):
 
                 # Save to the .txt file
                 with open(BOOK_FILE, 'a') as f:
-                    f.write(f'{title},{author},{year}\n')
+                    f.write(f'\n{title},{author},{year}')
 
                 # Update UI Table
                 self.update_book_table()
