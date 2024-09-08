@@ -1,3 +1,3 @@
-Stephanie,The Great Gatsby,2024-09-08,2024-09-22
-Alexandra,The Odyssey,2024-09-08,2024-09-22
-Kyla Mae,The Catch-22,2024-09-08,2024-09-22
+Peter,The Great Gatsby, F. Scott Fitzgerald, 1925,2024-09-08,2024-09-22
+Xi Jin Ping,1984, George Orwell, 1949,2024-09-08,2024-09-22
+Whitebeard,Moby-Dick, Herman Melville, 1851,2024-09-08,2024-09-22
