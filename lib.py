@@ -6,6 +6,7 @@ from PyQt5.QtCore import QDate
 import pandas as pd
 
 BOOK_FILE = 'books.txt'
+BORROWER_FILE = 'borrowers.txt'
 
 class WelcomeScreen(QWidget):
     def __init__(self):
@@ -62,6 +63,7 @@ class LibraryManagementSystem(QWidget):
 
         # Load books from file
         self.load_books_from_file()
+        self.load_borrowers_from_file()
 
     def init_books_tab(self):
         layout = QVBoxLayout()
@@ -127,6 +129,7 @@ class LibraryManagementSystem(QWidget):
 
         self.borrowed_table = QTableWidget()
         self.borrowed_table.setColumnCount(4)
+        self.borrowed_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.borrowed_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.borrowed_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         self.borrowed_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
@@ -203,6 +206,25 @@ class LibraryManagementSystem(QWidget):
         with open(BOOK_FILE, 'w') as f:
             for index, row in self.book_data.iterrows():
                 f.write(f"{row['Title']},{row['Author']},{row['Year']}\n")
+                
+    def load_borrowers_from_file(self):
+        try:
+            with open(BORROWER_FILE, 'r') as f:
+                lines = f.readlines()
+
+            # Populate DataFrame with file data
+            for line in lines:
+                if line.strip(): 
+                    borrower, title, borrow_date, return_date = line.strip().split(',')
+                    new_borrow = pd.DataFrame([[borrower, title, borrow_date, return_date]],
+                                            columns=['Borrower', 'Title', 'Borrow Date', 'Return Date'])
+                    self.borrowed_books = pd.concat([self.borrowed_books, new_borrow], ignore_index=True)
+
+                self.update_borrowed_table()
+
+        except FileNotFoundError:
+            QMessageBox.information(self, "File Error", "No borrower file found. Starting fresh.")
+
 
     def search_book(self):
         search_query = self.search_input.text().lower()
@@ -231,13 +253,22 @@ class LibraryManagementSystem(QWidget):
                 return_date = QDate.currentDate().addDays(14).toString("yyyy-MM-dd")  # Set return date after 14 days
 
                 borrowed_book = pd.DataFrame([[borrower, title, borrow_date, return_date]],
-                                             columns=['Borrower', 'Title', 'Borrow Date', 'Return Date'])
+                                            columns=['Borrower', 'Title', 'Borrow Date', 'Return Date'])
                 self.borrowed_books = pd.concat([self.borrowed_books, borrowed_book], ignore_index=True)
+
+                # Append to the borrowers.txt file
+                with open(BORROWER_FILE, 'a') as f:
+                    f.write(f'{borrower},{title},{borrow_date},{return_date}\n')
 
                 # Update borrowed books table
                 self.update_borrowed_table()
 
                 QMessageBox.information(self, "Success", f"{title} has been borrowed by {borrower}!")
+                
+    def save_borrowers_to_file(self):
+        with open(BORROWER_FILE, 'w') as f:
+            for index, row in self.borrowed_books.iterrows():
+                f.write(f"{row['Borrower']},{row['Title']},{row['Borrow Date']},{row['Return Date']}\n")
 
     def update_borrowed_table(self):
         self.borrowed_table.setRowCount(len(self.borrowed_books))
