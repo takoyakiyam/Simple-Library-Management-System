@@ -188,7 +188,8 @@ class LibraryManagementSystem(QWidget):
     def show_reviews(self):
         selected_row = self.book_table.currentRow()
         if selected_row >= 0:
-            book_title = self.book_data.iloc[selected_row]['Title']
+            # Fetch the title from the table instead of directly from book_data to handle filtered data
+            book_title = self.book_table.item(selected_row, 0).text()
             dialog = ReviewDialog(book_title, self)
             dialog.exec_()
         else:
@@ -296,8 +297,9 @@ class LibraryManagementSystem(QWidget):
     def search_book(self):
         search_query = self.search_input.text().lower()
         if search_query:
+            # Filter the book data based on the search query
             filtered_books = self.book_data[self.book_data['Title'].str.lower().str.contains(search_query)]
-
+            
             if not filtered_books.empty:
                 self.book_table.setRowCount(len(filtered_books))
                 for row in range(len(filtered_books)):
@@ -307,6 +309,7 @@ class LibraryManagementSystem(QWidget):
             else:
                 QMessageBox.information(self, "No Results", "No books found matching the search query")
         else:
+            # If no search query, show the entire book list
             self.update_book_table()
 
     def borrow_book(self):
