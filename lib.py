@@ -1,13 +1,46 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, 
                              QTableWidget, QTableWidgetItem, QMessageBox, QHBoxLayout, QTabWidget, 
-                             QDateEdit, QInputDialog, QAbstractItemView, QHeaderView)
+                             QDateEdit, QInputDialog, QAbstractItemView, QHeaderView, QDialog, QFormLayout)
 from PyQt5.QtCore import QDate
 import pandas as pd
 
 BOOK_FILE = 'books.txt'
 BORROWER_FILE = 'borrowers.txt'
 
+class AddBookDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('Add Book')
+        self.layout = QFormLayout()
+
+        # Book Entry Fields in the dialog
+        self.title_input = QLineEdit()
+        self.author_input = QLineEdit()
+        self.year_input = QLineEdit()
+
+        self.layout.addRow('Title:', self.title_input)
+        self.layout.addRow('Author:', self.author_input)
+        self.layout.addRow('Year:', self.year_input)
+
+        # Add buttons
+        self.add_button = QPushButton('Add Book')
+        self.cancel_button = QPushButton('Cancel')
+
+        self.add_button.clicked.connect(self.accept)
+        self.cancel_button.clicked.connect(self.reject)
+
+        # Button layout
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.add_button)
+        button_layout.addWidget(self.cancel_button)
+
+        self.layout.addRow(button_layout)
+        self.setLayout(self.layout)
+
+    def get_book_details(self):
+        return self.title_input.text(), self.author_input.text(), self.year_input.text()
+    
 class WelcomeScreen(QWidget):
     def __init__(self):
         super().__init__()
@@ -68,18 +101,9 @@ class LibraryManagementSystem(QWidget):
     def init_books_tab(self):
         layout = QVBoxLayout()
 
-        # Book Entry Fields
-        self.title_label = QLabel("Title:")
-        self.title_input = QLineEdit()
-
-        self.author_label = QLabel("Author:")
-        self.author_input = QLineEdit()
-
-        self.year_label = QLabel("Year:")
-        self.year_input = QLineEdit()
-
+        # Add Book Button
         self.add_book_button = QPushButton("Add Book")
-        self.add_book_button.clicked.connect(self.add_book)
+        self.add_book_button.clicked.connect(self.show_add_book_dialog)
 
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Search by Title")
@@ -112,12 +136,6 @@ class LibraryManagementSystem(QWidget):
         button_layout.addWidget(self.remove_book_button)
 
         # Adding widgets to layout
-        layout.addWidget(self.title_label)
-        layout.addWidget(self.title_input)
-        layout.addWidget(self.author_label)
-        layout.addWidget(self.author_input)
-        layout.addWidget(self.year_label)
-        layout.addWidget(self.year_input)
         layout.addWidget(self.add_book_button)
         layout.addLayout(button_layout)
         layout.addWidget(self.book_table)
@@ -154,31 +172,28 @@ class LibraryManagementSystem(QWidget):
 
         except FileNotFoundError:
             QMessageBox.information(self, "File Error", "No book file found. Starting fresh.")
+            
+    def show_add_book_dialog(self):
+        dialog = AddBookDialog(self)
+        if dialog.exec_() == QDialog.Accepted:
+            title, author, year = dialog.get_book_details()
+            self.add_book(title, author, year)
 
-    def add_book(self):
-        title = self.title_input.text()
-        author = self.author_input.text()
-        year = self.year_input.text()
+    def add_book(self, title, author, year):
+            if title and author and year:
+                # Add book to the data storage
+                new_book = pd.DataFrame([[title, author, year]], columns=['Title', 'Author', 'Year'])
+                self.book_data = pd.concat([self.book_data, new_book], ignore_index=True)
 
-        if title and author and year:
-            # Add book to the data storage
-            new_book = pd.DataFrame([[title, author, year]], columns=['Title', 'Author', 'Year'])
-            self.book_data = pd.concat([self.book_data, new_book], ignore_index=True)
+                # Save to the .txt file
+                with open(BOOK_FILE, 'a') as f:
+                    f.write(f'{title},{author},{year}\n')
 
-            # Save to the .txt file
-            with open(BOOK_FILE, 'a') as f:
-                f.write(f'{title},{author},{year}\n')
+                # Update UI Table
+                self.update_book_table()
 
-            # Update UI Table
-            self.update_book_table()
-
-            # Clear input fields
-            self.title_input.clear()
-            self.author_input.clear()
-            self.year_input.clear()
-
-        else:
-            QMessageBox.warning(self, "Input Error", "Please fill in all fields")
+            else:
+                QMessageBox.warning(self, "Input Error", "Please fill in all fields")
 
     def update_book_table(self):
         self.book_table.setRowCount(len(self.book_data))
