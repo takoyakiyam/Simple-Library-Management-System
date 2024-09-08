@@ -1,12 +1,50 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, 
                              QTableWidget, QTableWidgetItem, QMessageBox, QHBoxLayout, QTabWidget, 
-                             QDateEdit, QInputDialog, QAbstractItemView, QHeaderView, QDialog, QFormLayout)
+                             QDateEdit, QInputDialog, QAbstractItemView, QHeaderView, QDialog, QFormLayout, QTextEdit)
 from PyQt5.QtCore import QDate
 import pandas as pd
 
 BOOK_FILE = 'books.txt'
 BORROWER_FILE = 'borrowers.txt'
+REVIEW_FILE = 'reviews.txt'
+
+class ReviewDialog(QDialog):
+    def __init__(self, book_title, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"Reviews for {book_title}")
+        self.layout = QVBoxLayout()
+        
+        # Text area to show reviews
+        self.review_text = QTextEdit()
+        self.review_text.setReadOnly(True)
+        self.layout.addWidget(self.review_text)
+        
+        # Load and display reviews
+        self.load_reviews(book_title)
+        
+        self.setLayout(self.layout)
+        
+    def load_reviews(self, book_title):
+        reviews = []
+        try:
+            with open(REVIEW_FILE, 'r') as file:
+                for line in file:
+                    # Split by the first occurrence of ':' and strip whitespaces
+                    title, review = map(str.strip, line.strip().split(':', 1))
+                    # Match titles case-insensitively
+                    if title.lower() == book_title.lower():
+                        reviews.append(review)
+        except FileNotFoundError:
+            reviews = ["No reviews available."]
+        
+        # Display reviews or default message
+        if reviews:
+            self.review_text.setText("\n\n".join(reviews))
+        else:
+            self.review_text.setText("No reviews available.")
+
+            
 
 class AddBookDialog(QDialog):
     def __init__(self, parent=None):
@@ -119,6 +157,10 @@ class LibraryManagementSystem(QWidget):
         self.book_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         self.book_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.book_table.setHorizontalHeaderLabels(["Title", "Author", "Year"])
+        
+        # Reviews Button
+        self.reviews_button = QPushButton("Show Reviews")
+        self.reviews_button.clicked.connect(self.show_reviews)
 
         # Borrow Book Button
         self.borrow_book_button = QPushButton("Borrow Selected Book")
@@ -132,6 +174,7 @@ class LibraryManagementSystem(QWidget):
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.search_input)
         button_layout.addWidget(self.search_button)
+        button_layout.addWidget(self.reviews_button) 
         button_layout.addWidget(self.borrow_book_button)
         button_layout.addWidget(self.remove_book_button)
 
@@ -141,6 +184,15 @@ class LibraryManagementSystem(QWidget):
         layout.addWidget(self.book_table)
 
         self.book_tab.setLayout(layout)
+        
+    def show_reviews(self):
+        selected_row = self.book_table.currentRow()
+        if selected_row >= 0:
+            book_title = self.book_data.iloc[selected_row]['Title']
+            dialog = ReviewDialog(book_title, self)
+            dialog.exec_()
+        else:
+            QMessageBox.warning(self, "Selection Error", "Please select a book to see its reviews")
 
     def init_borrowed_tab(self):
         layout = QVBoxLayout()
