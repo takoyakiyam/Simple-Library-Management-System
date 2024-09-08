@@ -264,17 +264,19 @@ class LibraryManagementSystem(QWidget):
         layout = QVBoxLayout()
 
         self.borrowed_table = QTableWidget()
-        self.borrowed_table.setColumnCount(4)
+        self.borrowed_table.setColumnCount(6)
         self.borrowed_table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.borrowed_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
-        self.borrowed_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-        self.borrowed_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
-        self.borrowed_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
-        self.borrowed_table.setHorizontalHeaderLabels(["Borrower", "Title", "Borrow Date", "Return Date"])
-
+        self.borrowed_table.setHorizontalHeaderLabels(['Borrower', 'Title', 'Author', 'Year', 'Borrow Date', 'Return Date'])
+        self.borrowed_table.horizontalHeader().setStretchLastSection(True)
+        
+        # Return Book Button
+        self.return_book_button = QPushButton("Return Selected Book")
+        self.return_book_button.clicked.connect(self.return_book)
+    
         layout.addWidget(self.borrowed_table)
+        layout.addWidget(self.return_book_button)
         self.borrowed_tab.setLayout(layout)
-
+        
     def load_books_from_file(self):
         try:
             with open(BOOK_FILE, 'r') as f:
@@ -339,6 +341,11 @@ class LibraryManagementSystem(QWidget):
         with open(BOOK_FILE, 'w') as f:
             for index, row in self.book_data.iterrows():
                 f.write(f"{row['Title']},{row['Author']},{row['Year']}\n")
+
+    def save_borrowers_to_file(self):
+        with open(BORROWER_FILE, 'w') as f:
+            for index, row in self.borrowed_books.iterrows():
+                f.write(f"{row['Borrower']},{row['Title']},{row['Author']},{row['Year']},{row['Borrow Date']},{row['Return Date']}\n")
                 
     def load_borrowers_from_file(self):
         try:
@@ -348,17 +355,16 @@ class LibraryManagementSystem(QWidget):
             # Populate DataFrame with file data
             for line in lines:
                 if line.strip(): 
-                    borrower, title, borrow_date, return_date = line.strip().split(',')
-                    new_borrow = pd.DataFrame([[borrower, title, borrow_date, return_date]],
-                                            columns=['Borrower', 'Title', 'Borrow Date', 'Return Date'])
+                    borrower, title, author, year, borrow_date, return_date = line.strip().split(',')
+                    new_borrow = pd.DataFrame([[borrower, title, author, year, borrow_date, return_date]],
+                                            columns=['Borrower', 'Title', 'Author', 'Year', 'Borrow Date', 'Return Date'])
                     self.borrowed_books = pd.concat([self.borrowed_books, new_borrow], ignore_index=True)
 
-                self.update_borrowed_table()
+            self.update_borrowed_table()
 
         except FileNotFoundError:
             QMessageBox.information(self, "File Error", "No borrower file found. Starting fresh.")
-
-
+        
     def search_book(self):
         search_query = self.search_input.text().lower()
         if search_query:
@@ -382,37 +388,76 @@ class LibraryManagementSystem(QWidget):
         if selected_row >= 0:
             borrower, ok = QInputDialog.getText(self, "Borrow Book", "Enter Borrower's Name:")
             if ok and borrower:
-                # Record borrow details
+                # Get book details
                 title = self.book_data.iloc[selected_row]['Title']
+                author = self.book_data.iloc[selected_row]['Author']
+                year = self.book_data.iloc[selected_row]['Year']
                 borrow_date = QDate.currentDate().toString("yyyy-MM-dd")
                 return_date = QDate.currentDate().addDays(14).toString("yyyy-MM-dd")  # Set return date after 14 days
 
-                borrowed_book = pd.DataFrame([[borrower, title, borrow_date, return_date]],
-                                            columns=['Borrower', 'Title', 'Borrow Date', 'Return Date'])
+                # Add the book to the borrowed books data
+                borrowed_book = pd.DataFrame([[borrower, title, author, year, borrow_date, return_date]],
+                                            columns=['Borrower', 'Title', 'Author', 'Year', 'Borrow Date', 'Return Date'])
                 self.borrowed_books = pd.concat([self.borrowed_books, borrowed_book], ignore_index=True)
 
-                # Append to the borrowers.txt file
-                with open(BORROWER_FILE, 'a') as f:
-                    f.write(f'{borrower},{title},{borrow_date},{return_date}\n')
+                # Remove from available books
+                self.book_data = self.book_data.drop(selected_row).reset_index(drop=True)
+                self.update_book_table()
+
+                # Save to the borrowers.txt file
+                self.save_borrowers_to_file()
+
+                # Save to the books.txt file (after removing the borrowed book)
+                self.save_books_to_file()
 
                 # Update borrowed books table
                 self.update_borrowed_table()
 
                 QMessageBox.information(self, "Success", f"{title} has been borrowed by {borrower}!")
-                
+            else:
+                QMessageBox.warning(self, "Input Error", "Borrower's name is required.")
+
     def save_borrowers_to_file(self):
         with open(BORROWER_FILE, 'w') as f:
             for index, row in self.borrowed_books.iterrows():
-                f.write(f"{row['Borrower']},{row['Title']},{row['Borrow Date']},{row['Return Date']}\n")
+                f.write(f"{row['Borrower']},{row['Title']},{row['Author']},{row['Year']},{row['Borrow Date']},{row['Return Date']}\n")
+                
+    def return_book(self):
+        selected_row = self.borrowed_table.currentRow()
+        if selected_row >= 0:
+            # Get the book details from the borrowed_books DataFrame
+            borrower = self.borrowed_books.iloc[selected_row]['Borrower']
+            title = self.borrowed_books.iloc[selected_row]['Title']
+            author = self.borrowed_books.iloc[selected_row]['Author']  # Author detail
+            year = self.borrowed_books.iloc[selected_row]['Year']      # Year detail
+
+            # Add the book back to the available books
+            returned_book = pd.DataFrame([[title, author, year]], columns=['Title', 'Author', 'Year'])
+            self.book_data = pd.concat([self.book_data, returned_book], ignore_index=True)
+            self.update_book_table()
+
+            # Remove from borrowed books
+            self.borrowed_books = self.borrowed_books.drop(selected_row).reset_index(drop=True)
+            self.update_borrowed_table()
+
+            # Save changes to the borrowers.txt file
+            self.save_borrowers_to_file()
+
+            QMessageBox.information(self, "Success", f"{title} has been returned by {borrower}!")
+        else:
+            QMessageBox.warning(self, "Selection Error", "Please select a borrowed book to return.")
 
     def update_borrowed_table(self):
-        self.borrowed_table.setRowCount(len(self.borrowed_books))
-        for row in range(len(self.borrowed_books)):
-            self.borrowed_table.setItem(row, 0, QTableWidgetItem(self.borrowed_books.iloc[row]['Borrower']))
-            self.borrowed_table.setItem(row, 1, QTableWidgetItem(self.borrowed_books.iloc[row]['Title']))
-            self.borrowed_table.setItem(row, 2, QTableWidgetItem(self.borrowed_books.iloc[row]['Borrow Date']))
-            self.borrowed_table.setItem(row, 3, QTableWidgetItem(self.borrowed_books.iloc[row]['Return Date']))
-
+        self.borrowed_table.setRowCount(0)  # Clear the table first
+        for index, row in self.borrowed_books.iterrows():
+            self.borrowed_table.insertRow(index)
+            self.borrowed_table.setItem(index, 0, QTableWidgetItem(str(row['Borrower'])))
+            self.borrowed_table.setItem(index, 1, QTableWidgetItem(str(row['Title'])))
+            self.borrowed_table.setItem(index, 2, QTableWidgetItem(str(row['Author'])))  # Author column
+            self.borrowed_table.setItem(index, 3, QTableWidgetItem(str(row['Year'])))    # Year column
+            self.borrowed_table.setItem(index, 4, QTableWidgetItem(str(row['Borrow Date'])))
+            self.borrowed_table.setItem(index, 5, QTableWidgetItem(str(row['Return Date'])))
+        self.borrowed_table.resizeColumnsToContents()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
