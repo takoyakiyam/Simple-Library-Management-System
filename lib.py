@@ -1,7 +1,8 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, 
                              QTableWidget, QTableWidgetItem, QMessageBox, QHBoxLayout, QTabWidget, 
-                             QDateEdit, QInputDialog, QAbstractItemView, QHeaderView, QDialog, QFormLayout, QTextBrowser)
+                             QTextEdit, QInputDialog, QAbstractItemView, QHeaderView, QDialog, QFormLayout, 
+                             QTextBrowser)
 from PyQt5.QtCore import QDate
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -16,18 +17,24 @@ REVIEW_FILE = 'reviews.txt'
 class ReviewDialog(QDialog):
     def __init__(self, book_title, parent=None):
         super().__init__(parent)
+        self.book_title = book_title
         self.setWindowTitle(f"Reviews for {book_title}")
         self.layout = QVBoxLayout()
-        
+
         # Text area to show reviews
         self.review_text = QTextBrowser()
         self.layout.addWidget(self.review_text)
+
+        # Add "Add Review" button
+        self.add_review_button = QPushButton("Add a Review")
+        self.add_review_button.clicked.connect(self.add_review)
+        self.layout.addWidget(self.add_review_button)
         
         # Load and display reviews with sentiment
         self.load_reviews_with_sentiment(book_title)
-        
+
         self.setLayout(self.layout)
-        
+
     def load_reviews_with_sentiment(self, book_title):
         reviews = []
         sia = SentimentIntensityAnalyzer()  # VADER sentiment analyzer
@@ -39,7 +46,7 @@ class ReviewDialog(QDialog):
                         # Analyze sentiment of the review using VADER
                         sentiment_scores = sia.polarity_scores(review)
                         sentiment = self.get_sentiment_label(sentiment_scores['compound'])
-                        
+
                         # Append review with sentiment
                         sentiment_color = self.get_sentiment_color(sentiment)
                         reviews.append(f"Review: {review}<br>Sentiment: <span style='font-weight: bold; color: {sentiment_color}'>{sentiment}</span><br><br>")
@@ -68,6 +75,41 @@ class ReviewDialog(QDialog):
             return "gray"
         else:
             return "red"
+    
+    def add_review(self):
+        # Create a dialog with a QTextEdit for the review
+        review_dialog = QDialog(self)
+        review_dialog.setWindowTitle("Add a Review")
+        layout = QVBoxLayout()
+        review_dialog.setLayout(layout)
+
+        # Create a QTextEdit for the review
+        self.review_input = QTextEdit()
+        self.review_input.setPlaceholderText("Enter your review...")
+        layout.addWidget(self.review_input)
+
+        # Create buttons for submitting and canceling the review
+        button_layout = QHBoxLayout()
+        submit_button = QPushButton("Submit Review")
+        submit_button.clicked.connect(review_dialog.accept)
+        cancel_button = QPushButton("Cancel")
+        cancel_button.clicked.connect(review_dialog.reject)
+        button_layout.addWidget(submit_button)
+        button_layout.addWidget(cancel_button)
+        layout.addLayout(button_layout)
+
+        # Show the dialog and get the review
+        if review_dialog.exec_() == QDialog.Accepted:
+            review = self.review_input.toPlainText()
+            if review:
+                # Save the review to the file
+                with open(REVIEW_FILE, 'a') as file:
+                    file.write(f"{self.book_title}:{review}\n")
+                
+                # Reload the reviews with the new entry
+                self.load_reviews_with_sentiment(self.book_title)
+            else:
+                QMessageBox.warning(self, "Input Error", "Review cannot be empty.")
 
 class AddBookDialog(QDialog):
     def __init__(self, parent=None):
