@@ -2,3 +2,65 @@ The Great Gatsby:An amazing portrayal of the Jazz Age.
 the great gatsby:A second review for the same book.
 To Kill a Mockingbird:A compelling novel on racial injustice.
 Dracula:I love vampires but I hated the story of this book, the plot seems very random.
+1984:A haunting dystopian vision of a totalitarian future.
+1984:George Orwell's chilling portrayal of surveillance and control still feels relevant today.
+To Kill a Mockingbird:A compelling exploration of racial injustice and morality.
+To Kill a Mockingbird:Harper Lee's characters are unforgettable, especially Atticus Finch.
+Pride and Prejudice:A witty and romantic tale of love, class, and societal expectations.
+Pride and Prejudice:Jane Austen's writing is both sharp and entertaining, full of clever observations.
+The Great Gatsby:An amazing portrayal of the Jazz Age.
+The Great Gatsby:Fitzgerald captures the glamour and decay of the American Dream perfectly.
+Moby-Dick:A dense and symbolic read, but ultimately rewarding.
+Moby-Dick:The pursuit of the white whale feels like a metaphor for the human condition.
+War and Peace:A vast epic, capturing the grandeur and tragedy of war and life.
+War and Peace:Leo Tolstoy weaves an intricate web of characters and history.
+The Catcher in the Rye:Holden Caulfield's voice is iconic, but the story left me underwhelmed.
+The Catcher in the Rye:A brilliant portrayal of teenage angst and rebellion.
+The Lord of the Rings:An epic fantasy adventure that changed the genre forever.
+The Lord of the Rings:Tolkien’s world-building is unmatched; Middle-earth feels alive.
+Jane Eyre:A powerful story of resilience and self-discovery.
+Jane Eyre:Charlotte Brontë creates a timeless heroine in Jane.
+Crime and Punishment:A deep psychological exploration of guilt and redemption.
+Crime and Punishment:Dostoevsky's writing is dark but profoundly insightful.
+The Brothers Karamazov:A philosophical and spiritual masterpiece.
+The Brothers Karamazov:Dostoevsky's characters grapple with life's most challenging questions.
+Wuthering Heights:A wild and passionate tale of love and revenge.
+Wuthering Heights:Emily Brontë’s only novel is as haunting as the moors it’s set in.
+Brave New World:Huxley’s dystopia feels eerily prescient in today's world.
+Brave New World:A disturbing vision of a society consumed by pleasure and control.
+The Odyssey:A timeless epic filled with adventure, gods, and monsters.
+The Odyssey:Homer’s classic tale of Odysseus's long journey home remains captivating.
+The Iliad:An intense and brutal portrayal of the Trojan War.
+The Iliad:Homer’s epic poem is the foundation of Western literature.
+Anna Karenina:A tragic love story that explores the complexities of Russian society.
+Anna Karenina:Tolstoy's depiction of love and despair is as beautiful as it is heartbreaking.
+Madame Bovary:A striking portrayal of the consequences of unfulfilled desires.
+Madame Bovary:Gustave Flaubert's prose is mesmerizing, even as the story spirals into tragedy.
+The Divine Comedy:Dante’s journey through Hell, Purgatory, and Heaven is both profound and poetic.
+The Divine Comedy:A spiritual and philosophical exploration of the human soul.
+The Canterbury Tales:Chaucer’s collection of tales offers a humorous glimpse into medieval life.
+The Canterbury Tales:Each character in this classic feels alive with personality and depth.
+Don Quixote:An adventurous and comedic tale that explores the nature of reality.
+Don Quixote:Cervantes’ novel is both a farce and a deep meditation on idealism.
+One Hundred Years of Solitude:A magical and surreal journey through generations of one family.
+One Hundred Years of Solitude:García Márquez's blend of magic realism and history is breathtaking.
+The Sound and the Fury:Faulkner’s narrative style is complex, but the rewards are great.
+The Sound and the Fury:A deeply emotional novel with rich characters and layered meanings.
+The Grapes of Wrath:John Steinbeck's portrayal of the Dust Bowl era is heartbreaking and powerful.
+The Grapes of Wrath:A story of survival, resilience, and the American spirit.
+Ulysses:James Joyce’s stream-of-consciousness style is challenging but rewarding.
+Ulysses:A modernist masterpiece that captures the complexity of human thought.
+The Picture of Dorian Gray:Oscar Wilde's only novel is a fascinating exploration of vanity and morality.
+The Picture of Dorian Gray:A darkly beautiful tale of the dangers of eternal youth.
+Frankenstein:A groundbreaking novel that raises deep questions about creation and responsibility.
+Frankenstein:Mary Shelley’s classic blends horror with philosophical musings on humanity.
+Dracula:An atmospheric and suspenseful tale of terror.
+Dracula:I love vampires but I hated the story of this book, the plot seems very random.
+The Hobbit:A delightful adventure, full of whimsy and danger.
+The Hobbit:Tolkien’s prelude to The Lord of the Rings is a perfect blend of adventure and humor.
+Fahrenheit 451:A chilling warning about censorship and the power of knowledge.
+Fahrenheit 451:Bradbury’s vision of a future where books are burned still feels disturbingly possible.
+Catch-22:Joseph Heller’s absurd, darkly humorous take on the madness of war is unforgettable.
+Catch-22:A brilliantly satirical look at the contradictions of military life.
+Slaughterhouse-Five:Vonnegut’s blend of time travel and war is both tragic and darkly humorous.
+Slaughterhouse-Five:A sobering, yet surreal portrayal of the horrors of war.
