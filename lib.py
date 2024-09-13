@@ -267,16 +267,50 @@ class LibraryManagementSystem(QWidget):
         self.borrowed_table = QTableWidget()
         self.borrowed_table.setColumnCount(5)  # Update column count to 5
         self.borrowed_table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.borrowed_table.setHorizontalHeaderLabels(['Borrower', 'Title', 'Author', 'Year', 'Return Date'])  # Remove "Borrow Date" column
+        self.borrowed_table.setHorizontalHeaderLabels(['Borrower', 'Title', 'Author', 'Year', 'Return Date'])  
         self.borrowed_table.horizontalHeader().setStretchLastSection(True)
         
         # Return Book Button
         self.return_book_button = QPushButton("Return Selected Book")
         self.return_book_button.clicked.connect(self.return_book)
         
+        # Show Info Button
+        self.show_info_button = QPushButton("Show Info")
+        self.show_info_button.clicked.connect(self.show_borrowed_book_info)
+        
         layout.addWidget(self.borrowed_table)
         layout.addWidget(self.return_book_button)
+        layout.addWidget(self.show_info_button)
         self.borrowed_tab.setLayout(layout)
+
+    def show_borrowed_book_info(self):
+        selected_row = self.borrowed_table.currentRow()
+        if selected_row >= 0:
+            # Get the book details from the borrowed_books DataFrame
+            borrower = self.borrowed_books.iloc[selected_row]['Borrower']
+            borrower_email = self.borrowed_books.iloc[selected_row]['Borrower Email']
+            borrower_phone = self.borrowed_books.iloc[selected_row]['Borrower Phone']
+            title = self.borrowed_books.iloc[selected_row]['Title']
+            author = self.borrowed_books.iloc[selected_row]['Author']  # Author detail
+            year = self.borrowed_books.iloc[selected_row]['Year']      # Year detail
+            borrow_date = self.borrowed_books.iloc[selected_row]['Borrow Date']
+            return_date = self.borrowed_books.iloc[selected_row]['Return Date']
+
+            # Create a dialog to display the book details
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Borrowed Book Info")
+            layout = QVBoxLayout()
+            dialog.setLayout(layout)
+
+            # Create a text browser to display the book details
+            text_browser = QTextBrowser()
+            text_browser.setText(f"Borrower: {borrower}\nEmail: {borrower_email}\nPhone: {borrower_phone}\nTitle: {title}\nAuthor: {author}\nYear: {year}\nBorrow Date: {borrow_date}\nReturn Date: {return_date}")
+            layout.addWidget(text_browser)
+
+            # Show the dialog
+            dialog.exec_()
+        else:
+            QMessageBox.warning(self, "Selection Error", "Please select a borrowed book to show its info.")
         
     def load_books_from_file(self):
         try:
