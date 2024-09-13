@@ -8,6 +8,7 @@ import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import pandas as pd
 
+# Initialize the sentiment analysis pipeline with BERT
 nltk.download('vader_lexicon')
 
 BOOK_FILE = 'books.txt'
@@ -110,7 +111,7 @@ class ReviewDialog(QDialog):
                 self.load_reviews_with_sentiment(self.book_title)
             else:
                 QMessageBox.warning(self, "Input Error", "Review cannot be empty.")
-
+                
 class AddBookDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -264,15 +265,15 @@ class LibraryManagementSystem(QWidget):
         layout = QVBoxLayout()
 
         self.borrowed_table = QTableWidget()
-        self.borrowed_table.setColumnCount(6)
+        self.borrowed_table.setColumnCount(5)  # Update column count to 5
         self.borrowed_table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.borrowed_table.setHorizontalHeaderLabels(['Borrower', 'Title', 'Author', 'Year', 'Borrow Date', 'Return Date'])
+        self.borrowed_table.setHorizontalHeaderLabels(['Borrower', 'Title', 'Author', 'Year', 'Return Date'])  # Remove "Borrow Date" column
         self.borrowed_table.horizontalHeader().setStretchLastSection(True)
         
         # Return Book Button
         self.return_book_button = QPushButton("Return Selected Book")
         self.return_book_button.clicked.connect(self.return_book)
-    
+        
         layout.addWidget(self.borrowed_table)
         layout.addWidget(self.return_book_button)
         self.borrowed_tab.setLayout(layout)
@@ -355,9 +356,9 @@ class LibraryManagementSystem(QWidget):
             # Populate DataFrame with file data
             for line in lines:
                 if line.strip(): 
-                    borrower, title, author, year, borrow_date, return_date = line.strip().split(',')
-                    new_borrow = pd.DataFrame([[borrower, title, author, year, borrow_date, return_date]],
-                                            columns=['Borrower', 'Title', 'Author', 'Year', 'Borrow Date', 'Return Date'])
+                    borrower, borrower_email, borrower_phone, title, author, year, borrow_date, return_date = line.strip().split(',')
+                    new_borrow = pd.DataFrame([[borrower, borrower_email, borrower_phone, title, author, year, borrow_date, return_date]],
+                                            columns=['Borrower', 'Borrower Email', 'Borrower Phone', 'Title', 'Author', 'Year', 'Borrow Date', 'Return Date'])
                     self.borrowed_books = pd.concat([self.borrowed_books, new_borrow], ignore_index=True)
 
             self.update_borrowed_table()
@@ -386,14 +387,53 @@ class LibraryManagementSystem(QWidget):
     def borrow_book(self):
         selected_row = self.book_table.currentRow()
         if selected_row >= 0:
-            borrower, ok = QInputDialog.getText(self, "Borrow Book", "Enter Borrower's Name:")
-            if ok and borrower:
+            # Create a dialog with multiple inputs
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Borrow Book")
+            layout = QFormLayout()
+            dialog.setLayout(layout)
+
+            # Borrower's name input
+            self.borrower_input = QLineEdit()
+            layout.addRow("Borrower's Name:", self.borrower_input)
+
+            # Borrower's email input
+            self.borrower_email_input = QLineEdit()
+            layout.addRow("Borrower's Email:", self.borrower_email_input)
+
+            # Borrower's phone number input
+            self.borrower_phone_input = QLineEdit()
+            layout.addRow("Borrower's Phone Number:", self.borrower_phone_input)
+
+            # Return date input (default to 14 days from current date)
+            self.return_date_input = QLineEdit()
+            self.return_date_input.setText(QDate.currentDate().addDays(14).toString("yyyy-MM-dd"))
+            layout.addRow("Return Date:", self.return_date_input)
+
+            # Buttons
+            button_layout = QHBoxLayout()
+            submit_button = QPushButton("Submit")
+            submit_button.clicked.connect(dialog.accept)
+            cancel_button = QPushButton("Cancel")
+            cancel_button.clicked.connect(dialog.reject)
+            button_layout.addWidget(submit_button)
+            button_layout.addWidget(cancel_button)
+            layout.addRow(button_layout)
+
+            # Show the dialog and get the inputs
+            if dialog.exec_() == QDialog.Accepted:
+                borrower = self.borrower_input.text()
+                borrower_email = self.borrower_email_input.text()
+                borrower_phone = self.borrower_phone_input.text()
+                return_date = self.return_date_input.text()
+
                 # Get book details
                 title = self.book_data.iloc[selected_row]['Title']
                 author = self.book_data.iloc[selected_row]['Author']
                 year = self.book_data.iloc[selected_row]['Year']
+
+                # Set borrow date to current date
                 borrow_date = QDate.currentDate().toString("yyyy-MM-dd")
-                return_date = QDate.currentDate().addDays(14).toString("yyyy-MM-dd")  # Set return date after 14 days
 
                 # Add the book to the borrowed books data
                 borrowed_book = pd.DataFrame([[borrower, title, author, year, borrow_date, return_date]],
@@ -415,18 +455,20 @@ class LibraryManagementSystem(QWidget):
 
                 QMessageBox.information(self, "Success", f"{title} has been borrowed by {borrower}!")
             else:
-                QMessageBox.warning(self, "Input Error", "Borrower's name is required.")
+                QMessageBox.warning(self, "Input Error", "Please fill in all fields.")
 
     def save_borrowers_to_file(self):
         with open(BORROWER_FILE, 'w') as f:
             for index, row in self.borrowed_books.iterrows():
-                f.write(f"{row['Borrower']},{row['Title']},{row['Author']},{row['Year']},{row['Borrow Date']},{row['Return Date']}\n")
+                f.write(f"{row['Borrower']},{row['Borrower Email']},{row['Borrower Phone']},{row['Title']},{row['Author']},{row['Year']},{row['Borrow Date']},{row['Return Date']}\n")
                 
     def return_book(self):
         selected_row = self.borrowed_table.currentRow()
         if selected_row >= 0:
             # Get the book details from the borrowed_books DataFrame
             borrower = self.borrowed_books.iloc[selected_row]['Borrower']
+            borrower_email = self.borrowed_books.iloc[selected_row]['Borrower Email']
+            borrower_phone = self.borrowed_books.iloc[selected_row]['Borrower Phone']
             title = self.borrowed_books.iloc[selected_row]['Title']
             author = self.borrowed_books.iloc[selected_row]['Author']  # Author detail
             year = self.borrowed_books.iloc[selected_row]['Year']      # Year detail
@@ -448,16 +490,13 @@ class LibraryManagementSystem(QWidget):
             QMessageBox.warning(self, "Selection Error", "Please select a borrowed book to return.")
 
     def update_borrowed_table(self):
-        self.borrowed_table.setRowCount(0)  # Clear the table first
-        for index, row in self.borrowed_books.iterrows():
-            self.borrowed_table.insertRow(index)
-            self.borrowed_table.setItem(index, 0, QTableWidgetItem(str(row['Borrower'])))
-            self.borrowed_table.setItem(index, 1, QTableWidgetItem(str(row['Title'])))
-            self.borrowed_table.setItem(index, 2, QTableWidgetItem(str(row['Author'])))  # Author column
-            self.borrowed_table.setItem(index, 3, QTableWidgetItem(str(row['Year'])))    # Year column
-            self.borrowed_table.setItem(index, 4, QTableWidgetItem(str(row['Borrow Date'])))
-            self.borrowed_table.setItem(index, 5, QTableWidgetItem(str(row['Return Date'])))
-        self.borrowed_table.resizeColumnsToContents()
+        self.borrowed_table.setRowCount(len(self.borrowed_books))
+        for row in range(len(self.borrowed_books)):
+            self.borrowed_table.setItem(row, 0, QTableWidgetItem(self.borrowed_books.iloc[row]['Borrower']))
+            self.borrowed_table.setItem(row, 1, QTableWidgetItem(self.borrowed_books.iloc[row]['Title']))
+            self.borrowed_table.setItem(row, 2, QTableWidgetItem(self.borrowed_books.iloc[row]['Author']))
+            self.borrowed_table.setItem(row, 3, QTableWidgetItem(self.borrowed_books.iloc[row]['Year']))
+            self.borrowed_table.setItem(row, 4, QTableWidgetItem(self.borrowed_books.iloc[row]['Return Date']))
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
