@@ -1,3 +1,10 @@
-Peter,The Great Gatsby, F. Scott Fitzgerald, 1925,2024-09-08,2024-09-22
-Xi Jin Ping,1984, George Orwell, 1949,2024-09-08,2024-09-22
-Whitebeard,Moby-Dick, Herman Melville, 1851,2024-09-08,2024-09-22
+John Doe, johndoe@example.com, 1234567890, Moby-Dick, Herman Melville, 1851, 2024-09-13, 2024-10-05
+Jane Smith, janesmith@example.com, 9876543210, The Picture of Dorian Gray, Oscar Wilde, 1890, 2024-09-13, 2024-10-05
+Alice Johnson, alicejohnson@example.com, 5551234567, The Catcher in the Rye, J.D. Salinger, 1951, 2024-09-13, 2024-09-27
+Bob Brown, bobbrown@example.com, 5559876543, Pride and Prejudice, Jane Austen, 1813, 2024-09-13, 2024-09-27
+Emily Davis, emilydavis@example.com, 5555551234, To Kill a Mockingbird, Harper Lee, 1960, 2024-09-13, 2024-09-27
+Michael Lee, michaellee@example.com, 5551230987, 1984, George Orwell, 1949, 2024-09-13, 2024-10-05
+Sarah Taylor, sarahtaylor@example.com, 5555555555, Brave New World, Aldous Huxley, 1932, 2024-09-13, 2024-09-27
+David Kim, davidkim@example.com, 5555551234, The Great Gatsby, F. Scott Fitzgerald, 1925, 2024-09-13, 2024-10-05
+Jessica Martin, jessicamartin@example.com, 5551230987, The Hobbit, J.R.R. Tolkien, 1937, 2024-09-13, 2024-10-05
+Olivia Hall, oliviahall@example.com, 5555555555, The Odyssey, Homer, ~8th Century BC, 2024-09-13, 2024-10-05
