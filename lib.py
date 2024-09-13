@@ -15,6 +15,64 @@ BOOK_FILE = 'books.txt'
 BORROWER_FILE = 'borrowers.txt'
 REVIEW_FILE = 'reviews.txt'
 
+class EditBookDialog(QDialog):
+    def __init__(self, book_title, parent=None):
+        super().__init__(parent)
+        self.book_title = book_title
+        self.setWindowTitle(f"Edit Book: {book_title}")
+        self.layout = QFormLayout()
+
+        # Book Entry Fields in the dialog
+        self.title_input = QLineEdit()
+        self.author_input = QLineEdit()
+        self.year_input = QLineEdit()
+
+        # Populate the fields with the current book data
+        book_data = self.parent().book_data[self.parent().book_data['Title'] == book_title]
+        self.title_input.setText(book_data['Title'].iloc[0])
+        self.author_input.setText(book_data['Author'].iloc[0])
+        self.year_input.setText(book_data['Year'].iloc[0])
+
+        self.layout.addRow('Title:', self.title_input)
+        self.layout.addRow('Author:', self.author_input)
+        self.layout.addRow('Year:', self.year_input)
+
+        # Add buttons
+        self.save_button = QPushButton('Save Changes')
+        self.cancel_button = QPushButton('Cancel')
+
+        self.save_button.clicked.connect(self.save_changes)
+        self.cancel_button.clicked.connect(self.reject)
+
+        # Button layout
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.save_button)
+        button_layout.addWidget(self.cancel_button)
+
+        self.layout.addRow(button_layout)
+        self.setLayout(self.layout)
+
+    def save_changes(self):
+        # Get the updated book details
+        title = self.title_input.text()
+        author = self.author_input.text()
+        year = self.year_input.text()
+
+        # Update the book data
+        book_data = self.parent().book_data
+        book_data.loc[book_data['Title'] == self.book_title, 'Title'] = title
+        book_data.loc[book_data['Title'] == self.book_title, 'Author'] = author
+        book_data.loc[book_data['Title'] == self.book_title, 'Year'] = year
+
+        # Save the changes to the books.txt file
+        self.parent().save_books_to_file()
+
+        # Update the book table
+        self.parent().update_book_table()
+
+        # Close the dialog
+        self.accept()
+        
 class ReviewDialog(QDialog):
     def __init__(self, book_title, parent=None):
         super().__init__(parent)
@@ -224,6 +282,10 @@ class LibraryManagementSystem(QWidget):
         self.book_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.book_table.setHorizontalHeaderLabels(["Title", "Author", "Year"])
         
+        # Edit Book Button
+        self.edit_book_button = QPushButton("Edit Selected Book")
+        self.edit_book_button.clicked.connect(self.edit_book)
+        
         # Reviews Button
         self.reviews_button = QPushButton("Show Reviews")
         self.reviews_button.clicked.connect(self.show_reviews)
@@ -240,7 +302,8 @@ class LibraryManagementSystem(QWidget):
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.search_input)
         button_layout.addWidget(self.search_button)
-        button_layout.addWidget(self.reviews_button) 
+        button_layout.addWidget(self.reviews_button)
+        button_layout.addWidget(self.edit_book_button) 
         button_layout.addWidget(self.borrow_book_button)
         button_layout.addWidget(self.remove_book_button)
 
@@ -260,6 +323,15 @@ class LibraryManagementSystem(QWidget):
             dialog.exec_()
         else:
             QMessageBox.warning(self, "Selection Error", "Please select a book to see its reviews")
+            
+    def edit_book(self):
+        selected_row = self.book_table.currentRow()
+        if selected_row >= 0:
+            book_title = self.book_data.iloc[selected_row]['Title']
+            dialog = EditBookDialog(book_title, self)
+            dialog.exec_()
+        else:
+            QMessageBox.warning(self, "Selection Error", "Please select a book to edit")
 
     def init_borrowed_tab(self):
         layout = QVBoxLayout()
